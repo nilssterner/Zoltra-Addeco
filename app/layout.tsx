@@ -5,13 +5,13 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Zoltra-Addeco',
-  description: 'Create personal B2B outreach emails in seconds.',
+  title: 'Zoltra – Hitta B2B-leads och skapa personliga säljmail',
+  description: 'Zoltra hjälper småföretag att hitta lokala B2B-leads och skapa personliga outreach-mail snabbt och enkelt.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="sv">
+    <html lang="sv" className="scroll-smooth">
       <body className={inter.className}>{children}</body>
     </html>
   )

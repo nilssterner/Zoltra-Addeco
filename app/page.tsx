@@ -3,8 +3,17 @@ import { useState, useEffect } from 'react'
 import LeadForm from '@/components/LeadForm'
 import ResultCards from '@/components/ResultCards'
 import HistoryPanel from '@/components/HistoryPanel'
+import Hero from '@/components/Hero'
+import Demo from '@/components/Demo'
+import HowItWorks from '@/components/HowItWorks'
+import Trust from '@/components/Trust'
+import Pricing from '@/components/Pricing'
+import Footer from '@/components/Footer'
+import AuthModal from '@/components/AuthModal'
+import QuotaBar from '@/components/QuotaBar'
 import { FormData, GenerateResponse, HistoryEntry, LeadResult } from '@/lib/types'
 import { EXAMPLE_DATA } from '@/lib/exampleData'
+import { UserQuota, DEFAULT_QUOTA } from '@/lib/quota'
 
 const UNBOUNDED_RADIUS_KM = 9999
 const RADIUS_OPTIONS: { km: number; label: string }[] = [
@@ -24,43 +33,70 @@ const EMPTY_FORM: FormData = {
   tone: 'Professionell', length: 'Kort', language: 'Svenska', cta: 'Boka möte',
 }
 
+const inputClass = "w-full px-3 py-2.5 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-xs font-medium text-slate-700 mb-1">{label}</label>
+      {children}
+      {hint && <p className="mt-1 text-xs text-slate-400">{hint}</p>}
+    </div>
+  )
+}
+
+function Spinner() {
+  return (
+    <svg className="animate-spin w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+    </svg>
+  )
+}
+
 function LeadCard({ lead, onSelect }: { lead: LeadResult; onSelect: (lead: LeadResult) => void }) {
   return (
-    <div className={`rounded-xl border p-4 ${lead.isBestMatch ? 'border-blue-300 bg-blue-50' : 'border-slate-200 bg-slate-50'}`}>
-      <div className="flex items-center justify-between gap-3">
-        <div>
+    <div className={`rounded-xl border p-4 transition ${lead.isBestMatch ? 'border-blue-200 bg-blue-50' : 'border-slate-200 bg-white'}`}>
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <div className="min-w-0">
           {lead.isBestMatch && (
-            <span className="inline-block mb-1 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white">★ Bästa matchningen</span>
+            <span className="inline-block mb-1.5 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-semibold text-white">
+              ★ Bästa matchningen
+            </span>
           )}
-          <p className="text-sm font-semibold text-slate-900">{lead.name}</p>
-          <p className="text-sm text-slate-600">{lead.address}</p>
+          <p className="text-sm font-semibold text-slate-900 truncate">{lead.name}</p>
+          <p className="text-xs text-slate-500 mt-0.5">{lead.address}</p>
         </div>
         {lead.rating ? (
-          <span className="text-sm font-semibold text-amber-600 whitespace-nowrap">⭐ {lead.rating}</span>
+          <span className="text-xs font-semibold text-amber-600 whitespace-nowrap flex-shrink-0">⭐ {lead.rating}</span>
         ) : null}
       </div>
       {lead.matchReason && (
-        <p className="mt-2 text-xs text-blue-700">{lead.matchReason}</p>
+        <p className="text-xs text-blue-700 mb-3 leading-relaxed">{lead.matchReason}</p>
       )}
-      <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        {lead.distanceKm != null ? <p className="text-sm text-slate-600">{lead.distanceKm.toFixed(1)} km bort</p> : null}
-        {lead.phone ? <p className="text-sm text-slate-600">Telefon: {lead.phone}</p> : null}
-        {lead.website ? (
-          <a className="text-sm text-blue-600 hover:underline" href={lead.website} target="_blank" rel="noreferrer">Hemsida</a>
-        ) : null}
-        {lead.email ? (
-          <a className="text-sm text-blue-600 hover:underline" href={`mailto:${lead.email}`}>{lead.email}</a>
-        ) : null}
-        {lead.googleMapsUrl ? (
-          <a className="text-sm text-blue-600 hover:underline" href={lead.googleMapsUrl} target="_blank" rel="noreferrer">Google Maps</a>
-        ) : null}
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mb-3">
+        {lead.distanceKm != null && <span>{lead.distanceKm.toFixed(1)} km bort</span>}
+        {lead.phone && <span>{lead.phone}</span>}
+        {lead.email && (
+          <a href={`mailto:${lead.email}`} className="text-blue-600 hover:underline truncate max-w-[180px]">{lead.email}</a>
+        )}
+        {lead.website && (
+          <a href={lead.website} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+            Öppna hemsida ↗
+          </a>
+        )}
+        {lead.googleMapsUrl && (
+          <a href={lead.googleMapsUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+            Google Maps ↗
+          </a>
+        )}
       </div>
       <button
         type="button"
         onClick={() => onSelect(lead)}
-        className="mt-3 w-full rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
+        className="w-full rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
       >
-        Skriv mail till detta företag
+        Skapa mail till detta företag
       </button>
     </div>
   )
@@ -75,6 +111,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [activeTab, setActiveTab] = useState<'company' | 'leads' | 'email'>('company')
+  const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null)
+  const [quota, setQuota] = useState<UserQuota>({ ...DEFAULT_QUOTA })
 
   const isCompanyComplete = Boolean(
     formData.companyName.trim() &&
@@ -91,6 +129,11 @@ export default function Home() {
       const stored = localStorage.getItem('ll_history')
       if (stored) setHistory(JSON.parse(stored))
     } catch { /* ignore */ }
+    // Hämta aktuell kvot från servern (applicerar ev. månadsåterställning)
+    fetch('/api/quota')
+      .then(r => r.json())
+      .then(d => { if (d.quota) setQuota(d.quota) })
+      .catch(() => { /* quota visas med default-värde */ })
   }, [])
 
   const saveToHistory = (form: FormData, res: GenerateResponse) => {
@@ -106,18 +149,12 @@ export default function Home() {
     setLeadSummary(null)
     setResult(null)
 
-    if (!formData.leadIndustry.trim()) {
-      setError('Ange en bransch att söka efter.')
-      return
-    }
-    if (!formData.searchCity.trim()) {
-      setError('Ange en stad att söka i.')
-      return
-    }
+    if (!formData.leadIndustry.trim()) { setError('Ange en bransch att söka efter.'); return }
+    if (!formData.searchCity.trim()) { setError('Ange en stad att söka i.'); return }
 
     setLoading(true)
     try {
-      const leadRes = await fetch('/api/find-leads', {
+      const res = await fetch('/api/find-leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -131,25 +168,16 @@ export default function Home() {
           targetAudience: formData.targetAudience,
         }),
       })
+      const data = await res.json()
+      if (data.quota) setQuota(data.quota)
+      if (!res.ok) { setError(data.error || 'Vi kunde inte hitta leads just nu. Prova att bredda sökningen eller välja en annan stad.'); return }
 
-      const leadData = await leadRes.json()
-      if (!leadRes.ok) {
-        setError(leadData.message || leadData.error || 'Kunde inte hämta leaddata.')
-        return
-      }
-
-      const hasLeads = Array.isArray(leadData.leads) && leadData.leads.length > 0
-      setLeadResults(hasLeads ? leadData.leads : [])
-      setLeadSummary(leadData.message || null)
-
-      if (!hasLeads) {
-        setError(leadData.message || 'Inga riktiga leads hittades.')
-        return
-      }
-
-      setTimeout(() => document.getElementById('lead-results')?.scrollIntoView({ behavior: 'smooth' }), 100)
+      const hasLeads = Array.isArray(data.leads) && data.leads.length > 0
+      setLeadResults(hasLeads ? data.leads : [])
+      setLeadSummary(data.message || null)
+      if (!hasLeads) { setError('Inga leads hittades i det här området. Prova ett större avstånd eller en annan bransch.'); return }
     } catch {
-      setError('Kunde inte ansluta. Kontrollera att servern körs.')
+      setError('Kunde inte ansluta till servern. Kontrollera din internetanslutning och försök igen.')
     } finally {
       setLoading(false)
     }
@@ -171,14 +199,11 @@ export default function Home() {
     setResult(null)
     setLoading(true)
     try {
-      const selectedLead = leadResults.find(lead => lead.name === formData.prospectName)
+      const selectedLead = leadResults.find(l => l.name === formData.prospectName)
       const contextLeads = selectedLead ? [selectedLead] : leadResults
-
       const leadContext = contextLeads
         .map(lead => {
-          const details = [lead.name, lead.address, lead.phone, lead.website, lead.email]
-            .filter(Boolean)
-            .join(' | ')
+          const details = [lead.name, lead.address, lead.phone, lead.website, lead.email].filter(Boolean).join(' | ')
           const rating = lead.rating ? `⭐ ${lead.rating}` : ''
           const reviews = lead.reviewCount ? `(${lead.reviewCount} omdömen)` : ''
           const reason = lead.matchReason ? ` — ${lead.matchReason}` : ''
@@ -192,12 +217,14 @@ export default function Home() {
         body: JSON.stringify({ ...formData, leadContext }),
       })
       const data = await res.json()
-      if (!res.ok) { setError(data.error || 'Något gick fel.'); return }
-      setResult(data)
+      if (data.quota) setQuota(data.quota)
+      if (!res.ok) { setError(data.error || 'Något gick fel vid genereringen. Försök igen.'); return }
+      const { quota: _q, ...resultData } = data
+      setResult(resultData)
       saveToHistory(formData, data)
       setTimeout(() => document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' }), 100)
     } catch {
-      setError('Kunde inte ansluta. Kontrollera att servern körs.')
+      setError('Kunde inte ansluta till servern. Kontrollera din internetanslutning och försök igen.')
     } finally {
       setLoading(false)
     }
@@ -206,8 +233,8 @@ export default function Home() {
   const handleExport = () => {
     if (!result) return
     const lines = [
-      `Zoltra-Addeco – Export`,
-      `Kund: ${formData.prospectName}`,
+      `Zoltra – Export`,
+      `Mottagare: ${formData.prospectName}`,
       `Datum: ${new Date().toLocaleString('sv-SE')}`,
       `\n--- KUNDANALYS ---\n${result.customerAnalysis}`,
       `\n--- ÄMNESRADER ---\n${result.subjectLines.map((s, i) => `${i + 1}. ${s}`).join('\n')}`,
@@ -218,127 +245,157 @@ export default function Home() {
     const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
-    a.href = url; a.download = `zoltra-addeco-${formData.prospectName || 'export'}.txt`
-    a.click(); URL.revokeObjectURL(url)
+    a.href = url
+    a.download = `zoltra-${formData.prospectName || 'export'}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleNewVersion = () => {
+    setResult(null)
+    setTimeout(() => document.getElementById('email-form')?.scrollIntoView({ behavior: 'smooth' }), 50)
+  }
+
+  const clearAll = () => {
+    setFormData(EMPTY_FORM)
+    setResult(null)
+    setError(null)
+    setLeadResults([])
+    setLeadSummary(null)
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <span className="font-semibold text-slate-900 text-sm">Zoltra-Addeco</span>
+      <header className="bg-white border-b border-slate-100 sticky top-0 z-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <a href="/" className="font-bold text-slate-900 text-base tracking-tight">Zoltra</a>
+          <nav className="hidden sm:flex items-center gap-4 text-sm">
+            <a href="#demo" className="text-slate-500 hover:text-slate-900 transition-colors">Exempel</a>
+            <a href="#how" className="text-slate-500 hover:text-slate-900 transition-colors">Hur det fungerar</a>
+            <a href="#pris" className="text-slate-500 hover:text-slate-900 transition-colors">Pris</a>
+            <div className="w-px h-4 bg-slate-200" />
+            <button
+              type="button"
+              onClick={() => setAuthModal('login')}
+              className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
+            >
+              Logga in
+            </button>
+            <button
+              type="button"
+              onClick={() => setAuthModal('register')}
+              className="px-4 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs hover:bg-blue-700 transition-colors"
+            >
+              Registrera dig
+            </button>
+          </nav>
+          <div className="sm:hidden flex items-center gap-2">
+            <button type="button" onClick={() => setAuthModal('login')} className="text-xs text-slate-600 font-medium">Logga in</button>
+            <button type="button" onClick={() => setAuthModal('register')} className="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs hover:bg-blue-700 transition-colors">Registrera</button>
           </div>
-          <p className="text-xs text-slate-400 hidden sm:block">Create personal B2B outreach emails in seconds.</p>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <div className="mb-6 flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-          <button
-            type="button"
-            onClick={() => setActiveTab('company')}
-            className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${activeTab === 'company' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
-          >
-            Om företaget
-          </button>
-          <button
-            type="button"
-            onClick={() => canAccessLeads && setActiveTab('leads')}
-            disabled={!canAccessLeads}
-            title={!canAccessLeads ? 'Fyll i Om företaget först' : undefined}
-            className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${activeTab === 'leads' ? 'bg-blue-600 text-white' : canAccessLeads ? 'bg-white text-slate-600 hover:bg-slate-50' : 'bg-white text-slate-300 cursor-not-allowed'}`}
-          >
-            Hitta leads
-          </button>
-          <button
-            type="button"
-            onClick={() => canAccessEmail && setActiveTab('email')}
-            disabled={!canAccessEmail}
-            title={!canAccessEmail ? 'Hitta och välj ett lead först' : undefined}
-            className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${activeTab === 'email' ? 'bg-blue-600 text-white' : canAccessEmail ? 'bg-white text-slate-600 hover:bg-slate-50' : 'bg-white text-slate-300 cursor-not-allowed'}`}
-          >
-            Skapa mail
-          </button>
-        </div>
+      {/* Landing sections */}
+      <Hero />
+      <div id="demo"><Demo /></div>
+      <div id="how"><HowItWorks /></div>
+      <Trust />
+      <div id="pris"><Pricing /></div>
 
-        {activeTab === 'company' ? (
-          <div className="space-y-6">
+      {/* App section */}
+      <section id="app" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">Kom igång</h2>
+            <p className="text-slate-500 max-w-xl mx-auto text-sm sm:text-base">
+              Beskriv ditt företag så hjälper Zoltra dig att hitta relevanta leads och skapa personliga mailförslag.
+            </p>
+          </div>
+
+          {/* Tab nav */}
+          <div className="mb-6 flex rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm gap-1">
+            <button
+              type="button"
+              onClick={() => setActiveTab('company')}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'company' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+            >
+              1. Ditt företag
+            </button>
+            <button
+              type="button"
+              onClick={() => canAccessLeads && setActiveTab('leads')}
+              disabled={!canAccessLeads}
+              title={!canAccessLeads ? 'Fyll i om ditt företag först' : undefined}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'leads' ? 'bg-blue-600 text-white shadow-sm' : canAccessLeads ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
+            >
+              2. Hitta leads
+            </button>
+            <button
+              type="button"
+              onClick={() => canAccessEmail && setActiveTab('email')}
+              disabled={!canAccessEmail}
+              title={!canAccessEmail ? 'Hitta och välj ett lead först' : undefined}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'email' ? 'bg-blue-600 text-white shadow-sm' : canAccessEmail ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
+            >
+              3. Skapa mail
+            </button>
+          </div>
+
+          {/* Kvotvisning – alltid synlig i app-sektionen */}
+          <div className="mb-4">
+            <QuotaBar quota={quota} />
+          </div>
+
+          {/* Tab: Ditt företag */}
+          {activeTab === 'company' && (
             <div className="space-y-4">
               <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h2 className="text-lg font-semibold text-slate-900">Om ditt företag</h2>
-                    <p className="text-sm text-slate-500">Fyll i allt som behövs för att hitta bästa möjliga lead och skriva ett bra mail.</p>
-                  </div>
-                </div>
+                <h3 className="text-base font-semibold text-slate-900 mb-1">Om ditt företag</h3>
+                <p className="text-sm text-slate-500 mb-5">Informationen används för att hitta rätt leads och skapa personliga mail.</p>
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Företagsnamn</label>
-                    <input
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={formData.companyName}
-                      onChange={e => setFormData({ ...formData, companyName: e.target.value })}
-                      placeholder="Aristo"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Vad gör ni?</label>
+                  <Field label="Ditt företagsnamn">
+                    <input className={inputClass} value={formData.companyName} onChange={e => setFormData({ ...formData, companyName: e.target.value })} placeholder="t.ex. Johanssons Redovisning AB" />
+                  </Field>
+                  <Field label="Vad säljer du?" hint="Beskriv kort vad ni gör och vilka ni hjälper">
                     <textarea
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      className={inputClass + ' resize-none'}
                       rows={3}
                       value={formData.companyDescription}
                       onChange={e => setFormData({ ...formData, companyDescription: e.target.value })}
-                      placeholder="Kort beskrivning av verksamheten..."
+                      placeholder="t.ex. Vi är en redovisningsbyrå som hjälper mindre företag med bokföring, löner och bokslut."
                     />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Produkt/tjänst</label>
-                    <input
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={formData.productService}
-                      onChange={e => setFormData({ ...formData, productService: e.target.value })}
-                      placeholder="Måttanpassade skjutdörrar"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Målgrupp</label>
-                    <input
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={formData.targetAudience}
-                      onChange={e => setFormData({ ...formData, targetAudience: e.target.value })}
-                      placeholder="Byggföretag och fastighetsbolag"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Stad</label>
-                    <input
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={formData.companyCity}
-                      onChange={e => setFormData({ ...formData, companyCity: e.target.value })}
-                      placeholder="t.ex. Stockholm"
-                    />
-                    <p className="mt-1 text-xs text-slate-400">Staden ditt företag utgår ifrån.</p>
-                  </div>
+                  </Field>
+                  <Field label="Produkt eller tjänst">
+                    <input className={inputClass} value={formData.productService} onChange={e => setFormData({ ...formData, productService: e.target.value })} placeholder="t.ex. redovisningstjänster, IT-support, kontorsstädning, elinstallationer…" />
+                  </Field>
+                  <Field label="Vem vill du nå?">
+                    <input className={inputClass} value={formData.targetAudience} onChange={e => setFormData({ ...formData, targetAudience: e.target.value })} placeholder="t.ex. restauranger, fastighetsbolag, webbyråer, kontor…" />
+                  </Field>
+                  <Field label="Stad" hint="Staden ditt företag utgår ifrån">
+                    <input className={inputClass} value={formData.companyCity} onChange={e => setFormData({ ...formData, companyCity: e.target.value })} placeholder="t.ex. Göteborg" />
+                  </Field>
                 </div>
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-6 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
                     onClick={() => isCompanyComplete && setActiveTab('leads')}
                     disabled={!isCompanyComplete}
-                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Gå till leads
+                    Hitta leads →
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(EXAMPLE_DATA)}
+                    className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
+                  >
+                    Ladda demoexempel
                   </button>
                 </div>
                 {!isCompanyComplete && (
-                  <p className="mt-2 text-xs text-amber-600">Fyll i namn, beskrivning, produkt/tjänst och målgrupp för att gå vidare.</p>
+                  <p className="mt-3 text-xs text-slate-400">Fyll i namn, beskrivning, produkt/tjänst och målgrupp för att gå vidare.</p>
                 )}
               </div>
               <HistoryPanel
@@ -347,176 +404,157 @@ export default function Home() {
                 onClear={() => { setHistory([]); localStorage.removeItem('ll_history') }}
               />
             </div>
+          )}
 
-            <div className="space-y-4">
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="text-lg font-semibold text-slate-900 mb-4">Så här fungerar flödet</h2>
-                <ul className="space-y-3 text-sm text-slate-600">
-                  <li>• Fyll i info om ditt företag för bästa sökresultat.</li>
-                  <li>• Under Hitta leads söker du på stad, bransch och avstånd – vi hittar och rangordnar lokala företag via Google Places.</li>
-                  <li>• Välj det bästa leadet direkt från listan, så fylls mottagaren i automatiskt under Skapa mail.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        ) : activeTab === 'leads' ? (
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="text-lg font-semibold text-slate-900 mb-4">Hitta lokala företag</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Stad *</label>
-                    <input
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={formData.searchCity}
-                      onChange={e => setFormData({ ...formData, searchCity: e.target.value })}
-                      placeholder="t.ex. Stockholm"
-                    />
-                    <p className="mt-1 text-xs text-slate-400">Utgångspunkten Google Places söker ifrån.</p>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Bransch</label>
-                    <input
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={formData.leadIndustry}
-                      onChange={e => setFormData({ ...formData, leadIndustry: e.target.value })}
-                      placeholder="Bygg och renovering"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Beskriv vilka kunder du söker mer specifikt</label>
-                    <textarea
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                      rows={5}
-                      value={formData.leadCriteria}
-                      onChange={e => setFormData({ ...formData, leadCriteria: e.target.value })}
-                      placeholder="t.ex. inte bara matkedjor i allmänhet, utan specifikt restauranger som använder mycket pappkartonger/take away-förpackningar"
-                    />
-                    <p className="mt-1 text-xs text-slate-400">Ju mer specifik beskrivning, desto bättre kan vi rangordna träffarna efter hur väl de passar.</p>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Avstånd från staden</label>
-                    <div className="flex flex-wrap gap-2">
-                      {RADIUS_OPTIONS.map(({ km, label }) => (
-                        <button
-                          key={km}
-                          type="button"
-                          onClick={() => setFormData({ ...formData, searchRadiusKm: km })}
-                          className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.searchRadiusKm === km ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleFindLeads}
-                  disabled={loading}
-                  className="mt-5 w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold text-sm transition-colors"
-                >
-                  {loading ? 'Söker leads...' : 'Hitta leads'}
-                </button>
-                {error && (
-                  <div className="mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-                    {error}
-                  </div>
-                )}
-              </div>
-              <HistoryPanel
-                history={history}
-                onLoad={e => { setFormData(e.formData); setResult(e.result) }}
-                onClear={() => { setHistory([]); localStorage.removeItem('ll_history') }}
-              />
-            </div>
-
-            <div id="lead-results">
-              {loading && (
-                <div className="bg-white rounded-xl border border-slate-200 p-12 flex flex-col items-center gap-4 text-slate-500">
-                  <svg className="animate-spin w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                  <p className="text-sm">Söker och rangordnar lokala företag via Google Places...</p>
-                </div>
-              )}
-              {!loading && leadResults.length > 0 && (
-                <div className="bg-white rounded-xl border border-slate-200 p-6 mb-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h2 className="text-lg font-semibold text-slate-900">Hittade leads</h2>
-                      <p className="text-sm text-slate-500">Rangordnade efter bäst passform mot ditt företag.</p>
-                    </div>
-                  </div>
+          {/* Tab: Hitta leads */}
+          {activeTab === 'leads' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <div className="space-y-4">
+                <div className="bg-white rounded-xl border border-slate-200 p-6">
+                  <h3 className="text-base font-semibold text-slate-900 mb-1">Hitta lokala företag</h3>
+                  <p className="text-sm text-slate-500 mb-5">Sök på stad, bransch och avstånd. Vi rangordnar träffarna med AI.</p>
                   <div className="space-y-4">
-                    {leadResults.map((lead, index) => (
-                      <LeadCard key={lead.id || index} lead={lead} onSelect={handleSelectLead} />
-                    ))}
+                    <Field label="Stad *" hint="Den stad Google Places söker från">
+                      <input className={inputClass} value={formData.searchCity} onChange={e => setFormData({ ...formData, searchCity: e.target.value })} placeholder="t.ex. Göteborg" />
+                    </Field>
+                    <Field label="Bransch">
+                      <input className={inputClass} value={formData.leadIndustry} onChange={e => setFormData({ ...formData, leadIndustry: e.target.value })} placeholder="t.ex. restaurang, bygg, webbyrå, redovisning…" />
+                    </Field>
+                    <Field label="Beskriv mer specifikt vad du söker" hint="Ju mer specifikt, desto bättre matchning">
+                      <textarea
+                        className={inputClass + ' resize-none'}
+                        rows={4}
+                        value={formData.leadCriteria}
+                        onChange={e => setFormData({ ...formData, leadCriteria: e.target.value })}
+                        placeholder="t.ex. restauranger med take away som troligtvis använder mycket engångsförpackningar…"
+                      />
+                    </Field>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-700 mb-1.5">Avstånd från staden</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {RADIUS_OPTIONS.map(({ km, label }) => (
+                          <button
+                            key={km}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, searchRadiusKm: km })}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.searchRadiusKm === km ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleFindLeads}
+                    disabled={loading}
+                    className="mt-6 w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold text-sm transition-colors"
+                  >
+                    {loading ? 'Söker leads…' : 'Hitta leads'}
+                  </button>
+                  {error && (
+                    <div className="mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                      {error}
+                    </div>
+                  )}
                 </div>
-              )}
-              {!loading && leadSummary && !error && (
-                <div className="bg-white rounded-xl border border-slate-200 p-6 mb-4">
-                  <p className="text-sm text-slate-600">{leadSummary}</p>
-                </div>
-              )}
-              {!loading && !leadResults.length && !error && !leadSummary && (
-                <div className="bg-white rounded-xl border border-slate-200 p-12 flex flex-col items-center gap-3 text-slate-400">
-                  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103 10.5a7.5 7.5 0 0013.15 6.15z" />
-                  </svg>
-                  <p className="text-sm text-center">Sök efter lokala företag för att se Google Maps-resultat här.</p>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <LeadForm
-                  formData={formData}
-                  onChange={setFormData}
-                  onSubmit={handleGenerate}
-                  onClear={() => { setFormData(EMPTY_FORM); setResult(null); setError(null); setLeadResults([]); setLeadSummary(null) }}
-                  onLoadExample={() => setFormData(EXAMPLE_DATA)}
-                  loading={loading}
-                  error={error}
-                  submitLabel="Generera professionellt mail"
+                <HistoryPanel
+                  history={history}
+                  onLoad={e => { setFormData(e.formData); setResult(e.result) }}
+                  onClear={() => { setHistory([]); localStorage.removeItem('ll_history') }}
                 />
               </div>
-              <HistoryPanel
-                history={history}
-                onLoad={e => { setFormData(e.formData); setResult(e.result) }}
-                onClear={() => { setHistory([]); localStorage.removeItem('ll_history') }}
-              />
-            </div>
 
-            <div id="results">
-              {loading && (
-                <div className="bg-white rounded-xl border border-slate-200 p-12 flex flex-col items-center gap-4 text-slate-500">
-                  <svg className="animate-spin w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                  <p className="text-sm">Genererar personliga säljmail...</p>
-                </div>
-              )}
-              {!loading && result && <ResultCards result={result} onExport={handleExport} />}
-              {!loading && !result && !error && (
-                <div className="bg-white rounded-xl border border-slate-200 p-12 flex flex-col items-center gap-3 text-slate-400">
-                  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                  </svg>
-                  <p className="text-sm text-center">Fyll i formuläret och klicka på<br /><span className="font-medium text-slate-600">Generera säljmail</span> för att komma igång.</p>
-                </div>
-              )}
+              <div id="lead-results" className="space-y-3">
+                {loading && (
+                  <div className="bg-white rounded-xl border border-slate-200 p-12 flex flex-col items-center gap-4 text-slate-500">
+                    <Spinner />
+                    <p className="text-sm text-center">Söker och rangordnar lokala företag…</p>
+                  </div>
+                )}
+                {!loading && leadResults.length > 0 && (
+                  <>
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="text-sm font-semibold text-slate-900">Hittade leads</h3>
+                      <p className="text-xs text-slate-400">Rangordnade efter bäst passform</p>
+                    </div>
+                    {leadResults.map((lead, i) => (
+                      <LeadCard key={lead.id || i} lead={lead} onSelect={handleSelectLead} />
+                    ))}
+                  </>
+                )}
+                {!loading && leadSummary && !error && (
+                  <p className="text-xs text-slate-500 text-center py-2">{leadSummary}</p>
+                )}
+                {!loading && !leadResults.length && !error && !leadSummary && (
+                  <div className="bg-white rounded-xl border border-slate-200 p-12 flex flex-col items-center gap-3 text-slate-400">
+                    <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103 10.5a7.5 7.5 0 0013.15 6.15z" />
+                    </svg>
+                    <p className="text-sm text-center">Fyll i stad och bransch, klicka sedan på Hitta leads.</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      </main>
+          )}
+
+          {/* Tab: Skapa mail */}
+          {activeTab === 'email' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <div className="space-y-4" id="email-form">
+                <div className="bg-white rounded-xl border border-slate-200 p-6">
+                  <LeadForm
+                    formData={formData}
+                    onChange={setFormData}
+                    onSubmit={handleGenerate}
+                    onClear={clearAll}
+                    onLoadExample={() => setFormData(EXAMPLE_DATA)}
+                    loading={loading}
+                    error={error}
+                    submitLabel="Generera mailförslag"
+                  />
+                </div>
+                <HistoryPanel
+                  history={history}
+                  onLoad={e => { setFormData(e.formData); setResult(e.result) }}
+                  onClear={() => { setHistory([]); localStorage.removeItem('ll_history') }}
+                />
+              </div>
+
+              <div id="results">
+                {loading && (
+                  <div className="bg-white rounded-xl border border-slate-200 p-12 flex flex-col items-center gap-4 text-slate-500">
+                    <Spinner />
+                    <p className="text-sm">Genererar personliga säljmail…</p>
+                  </div>
+                )}
+                {!loading && result && (
+                  <ResultCards result={result} onExport={handleExport} onNewVersion={handleNewVersion} />
+                )}
+                {!loading && !result && !error && (
+                  <div className="bg-white rounded-xl border border-slate-200 p-12 flex flex-col items-center gap-3 text-slate-400">
+                    <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                    </svg>
+                    <p className="text-sm text-center">Fyll i mottagaren och klicka på<br /><span className="font-medium text-slate-600">Generera mailförslag</span>.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <Footer />
+
+      {authModal && (
+        <AuthModal
+          mode={authModal}
+          onClose={() => setAuthModal(null)}
+          onSwitchMode={mode => setAuthModal(mode)}
+        />
+      )}
     </div>
   )
 }

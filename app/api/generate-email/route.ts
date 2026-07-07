@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { buildSalesEmailPrompt } from '@/lib/buildSalesEmailPrompt'
 import { FormData, GenerateResponse } from '@/lib/types'
+import {
+  DEFAULT_QUOTA,
+  deserializeQuota,
+  serializeQuota,
+  applyReset,
+  checkMailQuota,
+  QUOTA_COOKIE,
+  QUOTA_COOKIE_MAX_AGE,
+} from '@/lib/quota'
 
 interface GenerateRequestBody extends FormData {
   leadContext?: string
@@ -17,8 +26,20 @@ function validateInput(data: FormData): string | null {
   return null
 }
 
+function quotaCookieOpts() {
+  return { path: '/', maxAge: QUOTA_COOKIE_MAX_AGE, sameSite: 'lax' as const, httpOnly: false }
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // ── Kvotvalidering (server-side) ──────────────────────────────────────
+    const rawQuota = req.cookies.get(QUOTA_COOKIE)?.value
+    const quota = applyReset(rawQuota ? deserializeQuota(rawQuota) : { ...DEFAULT_QUOTA })
+    const quotaCheck = checkMailQuota(quota)
+    if (!quotaCheck.ok) {
+      return NextResponse.json({ error: quotaCheck.error }, { status: 402 })
+    }
+
     const body = await req.json() as GenerateRequestBody
     const validationError = validateInput(body)
     if (validationError) {
@@ -51,7 +72,11 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    return NextResponse.json(result)
+    // ── Räkna upp mailanvändning och returnera uppdaterad kvot ────────────
+    const updatedQuota = { ...quota, mailUsed: quota.mailUsed + 1 }
+    const res = NextResponse.json({ ...result, quota: updatedQuota })
+    res.cookies.set(QUOTA_COOKIE, serializeQuota(updatedQuota), quotaCookieOpts())
+    return res
   } catch (err) {
     console.error('API route error:', err)
     return NextResponse.json(

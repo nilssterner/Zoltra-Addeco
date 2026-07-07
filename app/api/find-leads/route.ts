@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import {
+  DEFAULT_QUOTA,
+  deserializeQuota,
+  serializeQuota,
+  applyReset,
+  checkLeadsQuota,
+  QUOTA_COOKIE,
+  QUOTA_COOKIE_MAX_AGE,
+} from '@/lib/quota'
 
 interface LeadSearchRequestBody {
   leadIndustry?: string
@@ -203,8 +212,20 @@ Rangordna kandidaterna efter hur bra de passar som lead. Om en specifik kundbesk
   }
 }
 
+function quotaCookieOpts() {
+  return { path: '/', maxAge: QUOTA_COOKIE_MAX_AGE, sameSite: 'lax' as const, httpOnly: false }
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // ── Kvotvalidering (server-side) ──────────────────────────────────────
+    const rawQuota = req.cookies.get(QUOTA_COOKIE)?.value
+    const quota = applyReset(rawQuota ? deserializeQuota(rawQuota) : { ...DEFAULT_QUOTA })
+    const quotaCheck = checkLeadsQuota(quota)
+    if (!quotaCheck.ok) {
+      return NextResponse.json({ leads: [], error: quotaCheck.error, isMock: false }, { status: 402 })
+    }
+
     const body = await req.json() as LeadSearchRequestBody
     const leadIndustry = body.leadIndustry?.trim()
     const searchCity = body.searchCity?.trim()
@@ -322,7 +343,16 @@ export async function POST(req: NextRequest) {
 
     if (leads.length > 0) leads[0].isBestMatch = true
 
-    return NextResponse.json({ leads, message: `Hittade ${leads.length} företag inom ${radiusLabel}`, isMock: false })
+    // ── Räkna upp leadanvändning och returnera uppdaterad kvot ──────────────
+    const updatedQuota = { ...quota, leadsUsed: quota.leadsUsed + 1 }
+    const res = NextResponse.json({
+      leads,
+      message: `Hittade ${leads.length} företag inom ${radiusLabel}`,
+      isMock: false,
+      quota: updatedQuota,
+    })
+    res.cookies.set(QUOTA_COOKIE, serializeQuota(updatedQuota), quotaCookieOpts())
+    return res
   } catch (error) {
     console.error('Lead search error:', error)
     return NextResponse.json({ leads: [], error: 'Kunde inte hämta leaddata just nu.', isMock: false }, { status: 500 })
