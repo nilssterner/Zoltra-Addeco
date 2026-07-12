@@ -17,6 +17,7 @@ export interface FormData {
   searchRadiusKm: number
   // Recipient (Skapa mail) — only what's needed to write the email
   prospectName: string
+  prospectEmail: string
   prospectWebsite: string
   prospectIndustry: string
   prospectProblem: string

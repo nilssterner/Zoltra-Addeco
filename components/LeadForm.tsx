@@ -61,6 +61,9 @@ export default function LeadForm({ formData, onChange, onSubmit, onClear, onLoad
               placeholder="t.ex. Johanssons Bygg AB"
             />
           </Field>
+          <Field label="E-postadress" hint="Används för utskick via Utskick-fliken">
+            <input className={inputClass} type="email" value={formData.prospectEmail} onChange={set('prospectEmail')} placeholder="kontakt@foretag.se" />
+          </Field>
           <Field label="Hemsida">
             <input className={inputClass} value={formData.prospectWebsite} onChange={set('prospectWebsite')} placeholder="https://..." />
           </Field>

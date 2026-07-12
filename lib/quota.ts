@@ -72,12 +72,8 @@ export function checkLeadsQuota(quota: UserQuota): { ok: boolean; error?: string
 
 export function checkMailQuota(quota: UserQuota): { ok: boolean; error?: string } {
   const plan = PLANS[quota.planId]
-  if (!plan.canSendEmail) {
-    return {
-      ok: false,
-      error: 'Mailgenerering ingår inte i din plan. Uppgradera till Start eller högre.',
-    }
-  }
+  // canSendEmail avser nu faktiskt UTSKICK via kopplat konto – inte mailgenerering.
+  // Alla planer kan generera mailtext; kvoten kontrolleras separat nedan.
   if (quota.mailUsed >= mailLimit(quota)) {
     const limit = mailLimit(quota)
     const suffix = plan.isOneTime

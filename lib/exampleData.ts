@@ -11,6 +11,7 @@ export const EXAMPLE_DATA: FormData = {
   leadCriteria: 'Byggentreprenörer som bygger flerbostadshus eller renoverar lägenheter och behöver smarta, måttanpassade förvaringslösningar i tvättstugor, förråd och hallar.',
   searchRadiusKm: 25,
   prospectName: 'Exempelbygg AB',
+  prospectEmail: '',
   prospectWebsite: 'https://exempelbygg.se',
   prospectIndustry: 'Bygg och renovering',
   prospectProblem: 'Kan behöva effektiva och snygga förvaringslösningar till bostadsprojekt.',

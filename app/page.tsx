@@ -11,6 +11,7 @@ import Pricing from '@/components/Pricing'
 import Footer from '@/components/Footer'
 import AuthModal from '@/components/AuthModal'
 import QuotaBar from '@/components/QuotaBar'
+import OutreachTab from '@/components/outreach/OutreachTab'
 import { FormData, GenerateResponse, HistoryEntry, LeadResult } from '@/lib/types'
 import { EXAMPLE_DATA } from '@/lib/exampleData'
 import { UserQuota, DEFAULT_QUOTA } from '@/lib/quota'
@@ -29,7 +30,7 @@ const RADIUS_OPTIONS: { km: number; label: string }[] = [
 const EMPTY_FORM: FormData = {
   companyName: '', companyDescription: '', productService: '', targetAudience: '', companyCity: '',
   searchCity: '', leadIndustry: '', leadCriteria: '', searchRadiusKm: 25,
-  prospectName: '', prospectWebsite: '', prospectIndustry: '', prospectProblem: '',
+  prospectName: '', prospectEmail: '', prospectWebsite: '', prospectIndustry: '', prospectProblem: '',
   tone: 'Professionell', length: 'Kort', language: 'Svenska', cta: 'Boka möte',
 }
 
@@ -110,7 +111,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [history, setHistory] = useState<HistoryEntry[]>([])
-  const [activeTab, setActiveTab] = useState<'company' | 'leads' | 'email'>('company')
+  const [activeTab, setActiveTab] = useState<'company' | 'leads' | 'email' | 'outreach'>('company')
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null)
   const [quota, setQuota] = useState<UserQuota>({ ...DEFAULT_QUOTA })
 
@@ -123,6 +124,7 @@ export default function Home() {
   const isLeadChosen = Boolean(formData.prospectName.trim())
   const canAccessLeads = isCompanyComplete || activeTab === 'leads'
   const canAccessEmail = isCompanyComplete && (isLeadChosen || activeTab === 'email')
+  const canAccessOutreach = canAccessEmail || activeTab === 'outreach'
 
   useEffect(() => {
     try {
@@ -187,6 +189,7 @@ export default function Home() {
     setFormData({
       ...formData,
       prospectName: lead.name,
+      prospectEmail: lead.email ?? '',
       prospectWebsite: lead.website,
       prospectIndustry: formData.leadIndustry,
       prospectProblem: lead.matchReason || formData.prospectProblem,
@@ -340,6 +343,15 @@ export default function Home() {
               className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'email' ? 'bg-blue-600 text-white shadow-sm' : canAccessEmail ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
             >
               3. Skapa mail
+            </button>
+            <button
+              type="button"
+              onClick={() => canAccessOutreach && setActiveTab('outreach')}
+              disabled={!canAccessOutreach}
+              title={!canAccessOutreach ? 'Generera ett mail först' : undefined}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'outreach' ? 'bg-blue-600 text-white shadow-sm' : canAccessOutreach ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
+            >
+              4. Utskick
             </button>
           </div>
 
@@ -542,6 +554,16 @@ export default function Home() {
                 )}
               </div>
             </div>
+          )}
+
+          {/* Tab: Utskick */}
+          {activeTab === 'outreach' && (
+            <OutreachTab
+              quota={quota}
+              result={result}
+              prospectName={formData.prospectName}
+              prospectEmail={formData.prospectEmail}
+            />
           )}
         </div>
       </section>
