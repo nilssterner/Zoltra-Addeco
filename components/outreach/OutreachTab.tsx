@@ -112,7 +112,21 @@ export default function OutreachTab({ quota, result, prospectName, prospectEmail
       )}
       {subTab === 'sekvenser' && (
         plan.canAutoFollowUp
-          ? <SequenceBuilder />
+          ? <SequenceBuilder
+              initialName={result ? `Outreach – ${new Date().toLocaleDateString('sv-SE')}` : undefined}
+              initialSteps={result ? [
+                {
+                  delay_days: 0,
+                  subject: result.subjectLines[0] ?? '',
+                  body: result.emails[0]?.body ?? '',
+                },
+                {
+                  delay_days: 3,
+                  subject: `Re: ${result.subjectLines[0] ?? ''}`,
+                  body: result.followUpEmail ?? '',
+                },
+              ] : undefined}
+            />
           : <LockedFeature planNeeded="Pro" feature="Uppföljningssekvenser" />
       )}
       {subTab === 'logg' && <OutboxView />}

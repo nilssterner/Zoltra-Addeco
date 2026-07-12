@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { buildSalesEmailPrompt } from '@/lib/buildSalesEmailPrompt'
 import { FormData, GenerateResponse } from '@/lib/types'
+import { PLANS } from '@/lib/plans'
 import {
   DEFAULT_QUOTA,
   deserializeQuota,
@@ -32,12 +33,18 @@ function quotaCookieOpts() {
 
 export async function POST(req: NextRequest) {
   try {
-    // ── Kvotvalidering (server-side) ──────────────────────────────────────
     const rawQuota = req.cookies.get(QUOTA_COOKIE)?.value
     const quota = applyReset(rawQuota ? deserializeQuota(rawQuota) : { ...DEFAULT_QUOTA })
-    const quotaCheck = checkMailQuota(quota)
-    if (!quotaCheck.ok) {
-      return NextResponse.json({ error: quotaCheck.error }, { status: 402 })
+    const plan = PLANS[quota.planId]
+
+    // ── Kvotvalidering ────────────────────────────────────────────────────────
+    // Free / Start: mailQuota = max antal textförslag att generera (kopiera manuellt).
+    // Pro / Pro Max: textgenerering är obegränsad – kvoten gäller utskick via sendmail.
+    if (!plan.canSendEmail) {
+      const quotaCheck = checkMailQuota(quota)
+      if (!quotaCheck.ok) {
+        return NextResponse.json({ error: quotaCheck.error }, { status: 402 })
+      }
     }
 
     const body = await req.json() as GenerateRequestBody
@@ -59,24 +66,24 @@ export async function POST(req: NextRequest) {
       .map(b => b.text)
       .join('')
 
-    const cleaned = rawText.replace(/```json|```/g, '').trim()
-
     let result: GenerateResponse
     try {
-      result = JSON.parse(cleaned)
+      result = JSON.parse(rawText.replace(/```json|```/g, '').trim())
     } catch (parseErr) {
       console.error('JSON parse failed:', parseErr, '\nRaw:', rawText)
-      return NextResponse.json(
-        { error: 'Kunde inte tolka AI-svaret. Försök igen.' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Kunde inte tolka AI-svaret. Försök igen.' }, { status: 500 })
     }
 
-    // ── Räkna upp mailanvändning och returnera uppdaterad kvot ────────────
-    const updatedQuota = { ...quota, mailUsed: quota.mailUsed + 1 }
-    const res = NextResponse.json({ ...result, quota: updatedQuota })
-    res.cookies.set(QUOTA_COOKIE, serializeQuota(updatedQuota), quotaCookieOpts())
-    return res
+    // Räkna upp kvoten bara för Free/Start (textgenerering)
+    if (!plan.canSendEmail) {
+      const updatedQuota = { ...quota, mailUsed: quota.mailUsed + 1 }
+      const res = NextResponse.json({ ...result, quota: updatedQuota })
+      res.cookies.set(QUOTA_COOKIE, serializeQuota(updatedQuota), quotaCookieOpts())
+      return res
+    }
+
+    // Pro/Pro Max: returnera resultat utan att röra mailkvoten (den spåras vid utskick)
+    return NextResponse.json({ ...result, quota })
   } catch (err) {
     console.error('API route error:', err)
     return NextResponse.json(
