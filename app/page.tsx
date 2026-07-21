@@ -4,6 +4,7 @@ import LeadForm from '@/components/LeadForm'
 import ResultCards from '@/components/ResultCards'
 import HistoryPanel from '@/components/HistoryPanel'
 import Hero from '@/components/Hero'
+import AnnouncementBanner from '@/components/AnnouncementBanner'
 import Demo from '@/components/Demo'
 import HowItWorks from '@/components/HowItWorks'
 import Trust from '@/components/Trust'
@@ -269,6 +270,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      <AnnouncementBanner />
       {/* Header */}
       <header className="bg-white border-b border-slate-100 sticky top-0 z-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
