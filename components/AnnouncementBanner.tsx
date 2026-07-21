@@ -3,6 +3,7 @@ const MESSAGES = [
   'Skapa personliga mailförslag på minuter',
   'Byggt för ansvarsfull B2B-outreach',
   'Gratis att testa under beta',
+  'Fokusera på relevanta företag nära dig',
 ]
 
 function MessageRow() {
