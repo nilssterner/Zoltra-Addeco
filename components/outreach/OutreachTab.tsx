@@ -127,7 +127,7 @@ export default function OutreachTab({ quota, result, prospectName, prospectEmail
                 },
               ] : undefined}
             />
-          : <LockedFeature planNeeded="Pro" feature="Uppföljningssekvenser" />
+          : <LockedFeature planNeeded="Pro Max" feature="Uppföljningssekvenser" />
       )}
       {subTab === 'logg' && <OutboxView />}
       {subTab === 'pipeline' && <PipelineView />}

@@ -10,7 +10,7 @@ function planCheck(req: NextRequest): { ok: boolean; error?: string } {
   const quota = raw ? deserializeQuota(raw) : { ...DEFAULT_QUOTA }
   const plan = PLANS[quota.planId]
   if (!plan.canAutoFollowUp) {
-    return { ok: false, error: `Uppföljningssekvenser ingår inte i ${plan.name}-planen. Uppgradera till Pro eller Pro Max.` }
+    return { ok: false, error: `Uppföljningssekvenser ingår inte i ${plan.name}-planen. Uppgradera till Pro Max.` }
   }
   return { ok: true }
 }

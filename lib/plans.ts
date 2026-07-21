@@ -35,7 +35,7 @@ export const PLANS: Record<PlanId, Plan> = {
       '10 leadsökningar (engångskvot)',
       '15 mailförslag att kopiera (engångskvot)',
       'Kvoten återställs aldrig',
-      'Ingen automatisk utskickshantering',
+      'Kopiera mail manuellt',
     ],
   },
   start: {
@@ -54,7 +54,7 @@ export const PLANS: Record<PlanId, Plan> = {
       '25 leadsökningar / mån',
       '50 mailförslag att kopiera / mån',
       'Kvot återställs månadsvis',
-      'Ingen automatisk utskickshantering',
+      'Kopiera mail manuellt',
     ],
   },
   pro: {
@@ -65,15 +65,14 @@ export const PLANS: Record<PlanId, Plan> = {
     mailQuota: 250,
     isOneTime: false,
     canSendEmail: true,
-    canAutoFollowUp: true,
+    canAutoFollowUp: false,
     canViewPipeline: false,
     canViewStats: false,
     features: [
       '100 leadsökningar / mån',
       '250 utskick / mån',
+      'Skicka mail med ett klick i appen',
       'Utskick via ditt Gmail/Outlook',
-      'Automatiska uppföljningssekvenser',
-      'Stopp vid svar från leadet',
     ],
   },
   pro_max: {
@@ -90,7 +89,8 @@ export const PLANS: Record<PlanId, Plan> = {
     features: [
       '1 000 leadsökningar / mån',
       '2 000 utskick / mån',
-      'Allt i Pro',
+      'Skicka mail med ett klick i appen',
+      'Automatiskt uppföljningsmail',
       'Pipeline-vy per lead',
       'Statistik (svarsfrekvens, möten)',
     ],
