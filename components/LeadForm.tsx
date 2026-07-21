@@ -89,7 +89,7 @@ export default function LeadForm({ formData, onChange, onSubmit, onClear, onLoad
             <div className="flex flex-wrap gap-2">
               {TONES.map(t => (
                 <button key={t} type="button" onClick={() => onChange({ ...formData, tone: t })}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.tone === t ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.tone === t ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
                   {t}
                 </button>
               ))}
@@ -100,7 +100,7 @@ export default function LeadForm({ formData, onChange, onSubmit, onClear, onLoad
               <div className="flex gap-2">
                 {LENGTHS.map(l => (
                   <button key={l} type="button" onClick={() => onChange({ ...formData, length: l })}
-                    className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.length === l ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
+                    className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.length === l ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
                     {l}
                   </button>
                 ))}
@@ -110,7 +110,7 @@ export default function LeadForm({ formData, onChange, onSubmit, onClear, onLoad
               <div className="flex gap-2">
                 {LANGUAGES.map(l => (
                   <button key={l} type="button" onClick={() => onChange({ ...formData, language: l })}
-                    className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.language === l ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
+                    className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.language === l ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
                     {l}
                   </button>
                 ))}
@@ -135,7 +135,7 @@ export default function LeadForm({ formData, onChange, onSubmit, onClear, onLoad
         type="button"
         onClick={onSubmit}
         disabled={loading}
-        className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+        className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
       >
         {loading ? (
           <>

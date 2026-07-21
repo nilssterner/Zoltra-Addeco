@@ -110,7 +110,7 @@ export default function SendPanel({ result, prospectName, prospectEmail }: SendP
       <button
         onClick={send}
         disabled={sending}
-        className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+        className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
       >
         {sending ? (
           <>

@@ -70,7 +70,7 @@ export default function SequenceBuilder({ initialSteps, initialName }: SequenceB
           <div key={i} className="border border-slate-200 rounded-xl p-4 bg-slate-50">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                <span className="w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
                 <span className="text-xs font-semibold text-slate-700">
                   {i === 0 ? 'Ursprungligt mail' : `Uppföljning ${i}`}
                 </span>
@@ -131,7 +131,7 @@ export default function SequenceBuilder({ initialSteps, initialName }: SequenceB
       <button
         onClick={save}
         disabled={saving}
-        className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold text-sm transition-colors"
+        className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold text-sm transition-colors"
       >
         {saving ? 'Sparar…' : 'Spara sekvens'}
       </button>

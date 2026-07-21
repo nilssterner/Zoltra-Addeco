@@ -53,7 +53,7 @@ export default function HowItWorks() {
           {STEPS.map(step => (
             <div key={step.n} className="relative bg-slate-50 rounded-xl p-6 border border-slate-100">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   {step.n}
                 </div>
                 <h3 className="font-semibold text-slate-900 text-sm">{step.title}</h3>

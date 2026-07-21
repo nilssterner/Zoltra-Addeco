@@ -30,18 +30,18 @@ export default function Pricing() {
               <div
                 key={plan.id}
                 className={`relative rounded-2xl border flex flex-col overflow-hidden ${
-                  isHighlighted ? 'border-blue-500 shadow-lg' : 'border-slate-200'
+                  isHighlighted ? 'border-slate-900 shadow-lg' : 'border-slate-200'
                 }`}
               >
                 {plan.badge && (
-                  <div className="bg-blue-600 text-white text-xs font-semibold text-center py-1.5 tracking-wide">
+                  <div className="bg-slate-900 text-white text-xs font-semibold text-center py-1.5 tracking-wide">
                     {plan.badge}
                   </div>
                 )}
 
                 {/* Header */}
-                <div className={`px-5 pt-5 pb-4 ${isHighlighted ? 'bg-blue-600' : 'bg-slate-50'}`}>
-                  <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${isHighlighted ? 'text-blue-200' : 'text-slate-400'}`}>
+                <div className={`px-5 pt-5 pb-4 ${isHighlighted ? 'bg-slate-900' : 'bg-slate-50'}`}>
+                  <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${isHighlighted ? 'text-slate-300' : 'text-slate-400'}`}>
                     {plan.name}
                   </p>
                   {plan.price === 0 ? (
@@ -53,10 +53,10 @@ export default function Pricing() {
                       <span className={`text-3xl font-bold ${isHighlighted ? 'text-white' : 'text-slate-900'}`}>
                         {plan.price.toLocaleString('sv-SE')} kr
                       </span>
-                      <span className={`text-sm ${isHighlighted ? 'text-blue-200' : 'text-slate-400'}`}>/mån</span>
+                      <span className={`text-sm ${isHighlighted ? 'text-slate-300' : 'text-slate-400'}`}>/mån</span>
                     </div>
                   )}
-                  <p className={`text-xs mt-1 ${isHighlighted ? 'text-blue-200' : 'text-slate-400'}`}>
+                  <p className={`text-xs mt-1 ${isHighlighted ? 'text-slate-300' : 'text-slate-400'}`}>
                     {plan.isOneTime ? 'Engångskvot – återställs ej' : 'Kvot återställs månadsvis'}
                   </p>
                 </div>
@@ -107,7 +107,7 @@ export default function Pricing() {
                       type="button"
                       className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-colors ${
                         isHighlighted
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          ? 'bg-slate-900 text-white hover:bg-slate-800'
                           : 'bg-slate-900 text-white hover:bg-slate-800'
                       }`}
                       // TODO: koppla till betalflöde (Stripe, Klarna el. liknande)

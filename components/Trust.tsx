@@ -21,7 +21,7 @@ export default function Trust() {
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">Byggt för ansvarsfull B2B-outreach</h2>
           <p className="text-slate-500 text-sm sm:text-base max-w-lg mx-auto">
-            Vi tror på personlig och relevant kontakt – inte automatiserade massutskick.
+            Vi tror på personlig och relevant kontakt, inte automatiserade massutskick.
           </p>
         </div>
 

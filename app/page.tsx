@@ -61,7 +61,7 @@ function LeadCard({ lead, onSelect }: { lead: LeadResult; onSelect: (lead: LeadR
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="min-w-0">
           {lead.isBestMatch && (
-            <span className="inline-block mb-1.5 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-semibold text-white">
+            <span className="inline-block mb-1.5 rounded-full bg-slate-900 px-2.5 py-0.5 text-xs font-semibold text-white">
               ★ Bästa matchningen
             </span>
           )}
@@ -95,7 +95,7 @@ function LeadCard({ lead, onSelect }: { lead: LeadResult; onSelect: (lead: LeadR
       <button
         type="button"
         onClick={() => onSelect(lead)}
-        className="w-full rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
+        className="w-full rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-800"
       >
         Skapa mail till detta företag
       </button>
@@ -288,14 +288,14 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setAuthModal('register')}
-              className="px-4 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs hover:bg-blue-700 transition-colors"
+              className="px-4 py-1.5 rounded-lg bg-slate-900 text-white font-semibold text-xs hover:bg-slate-800 transition-colors"
             >
               Registrera dig
             </button>
           </nav>
           <div className="sm:hidden flex items-center gap-2">
             <button type="button" onClick={() => setAuthModal('login')} className="text-xs text-slate-600 font-medium">Logga in</button>
-            <button type="button" onClick={() => setAuthModal('register')} className="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs hover:bg-blue-700 transition-colors">Registrera</button>
+            <button type="button" onClick={() => setAuthModal('register')} className="px-3 py-1.5 rounded-lg bg-slate-900 text-white font-semibold text-xs hover:bg-slate-800 transition-colors">Registrera</button>
           </div>
         </div>
       </header>
@@ -322,7 +322,7 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setActiveTab('company')}
-              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'company' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'company' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
             >
               1. Ditt företag
             </button>
@@ -331,7 +331,7 @@ export default function Home() {
               onClick={() => canAccessLeads && setActiveTab('leads')}
               disabled={!canAccessLeads}
               title={!canAccessLeads ? 'Fyll i om ditt företag först' : undefined}
-              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'leads' ? 'bg-blue-600 text-white shadow-sm' : canAccessLeads ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'leads' ? 'bg-slate-900 text-white shadow-sm' : canAccessLeads ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
             >
               2. Hitta leads
             </button>
@@ -340,7 +340,7 @@ export default function Home() {
               onClick={() => canAccessEmail && setActiveTab('email')}
               disabled={!canAccessEmail}
               title={!canAccessEmail ? 'Hitta och välj ett lead först' : undefined}
-              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'email' ? 'bg-blue-600 text-white shadow-sm' : canAccessEmail ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'email' ? 'bg-slate-900 text-white shadow-sm' : canAccessEmail ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
             >
               3. Skapa mail
             </button>
@@ -349,7 +349,7 @@ export default function Home() {
               onClick={() => canAccessOutreach && setActiveTab('outreach')}
               disabled={!canAccessOutreach}
               title={!canAccessOutreach ? 'Generera ett mail först' : undefined}
-              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'outreach' ? 'bg-blue-600 text-white shadow-sm' : canAccessOutreach ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${activeTab === 'outreach' ? 'bg-slate-900 text-white shadow-sm' : canAccessOutreach ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' : 'text-slate-300 cursor-not-allowed'}`}
             >
               4. Utskick
             </button>
@@ -394,7 +394,7 @@ export default function Home() {
                     type="button"
                     onClick={() => isCompanyComplete && setActiveTab('leads')}
                     disabled={!isCompanyComplete}
-                    className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Hitta leads →
                   </button>
@@ -449,7 +449,7 @@ export default function Home() {
                             key={km}
                             type="button"
                             onClick={() => setFormData({ ...formData, searchRadiusKm: km })}
-                            className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.searchRadiusKm === km ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${formData.searchRadiusKm === km ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
                           >
                             {label}
                           </button>
@@ -461,7 +461,7 @@ export default function Home() {
                     type="button"
                     onClick={handleFindLeads}
                     disabled={loading}
-                    className="mt-6 w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold text-sm transition-colors"
+                    className="mt-6 w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold text-sm transition-colors"
                   >
                     {loading ? 'Söker leads…' : 'Hitta leads'}
                   </button>
