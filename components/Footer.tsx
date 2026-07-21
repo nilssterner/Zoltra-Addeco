@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <p className="font-semibold text-white text-sm">Zoltra</p>
+            <p className="font-semibold text-white text-sm">Zoltra Handelsbolag (969804-6092)</p>
             <p className="text-xs mt-0.5">AI-stöd för lokal B2B-outreach</p>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-4 text-xs">
@@ -19,6 +19,7 @@ export default function Footer() {
             Zoltra Handelsbolag skapades 2026 i Falköping, Sverige och drivs av Nils Sterner och Viggo Thorell.
             Zoltra skapades för att vi vill hjälpa mindre företag bli mer konkurrenskraftiga.
           </p>
+          <p className="mt-2">Avbryt din prenumeration när du vill, ingen bindningstid.</p>
         </div>
       </div>
     </footer>
