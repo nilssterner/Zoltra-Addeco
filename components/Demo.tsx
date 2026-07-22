@@ -18,7 +18,7 @@ export default function Demo() {
             Se hur ett personligt säljmail kan se ut
           </h2>
           <p className="text-slate-500 max-w-lg mx-auto text-sm sm:text-base">
-            Baserat på ditt företag och ett hittat lead genereras ett personligt first mail på sekunder.
+            Baserat på ditt företag och ett hittat lead genereras ett personligt första mail på sekunder.
           </p>
         </div>
 

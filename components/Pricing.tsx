@@ -19,6 +19,9 @@ export default function Pricing() {
           <p className="text-slate-500 text-sm sm:text-base">
             Börja gratis. Uppgradera när du vill växa.
           </p>
+          <p className="text-slate-400 text-xs mt-2">
+            Free-planen är gratis. Betalplanerna gäller från idag.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

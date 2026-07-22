@@ -50,7 +50,7 @@ export default function ResultCards({ result, onExport, onNewVersion }: ResultCa
       </div>
 
       <div className="rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-800">
-        Läs alltid igenom och anpassa texten innan du skickar det. Inga mail skickas automatiskt.
+        Läs alltid igenom och anpassa texten. Inget skickas utan att du godkänt det.
       </div>
 
       <Card title="Kundanalys" copyText={result.customerAnalysis}>

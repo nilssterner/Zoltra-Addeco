@@ -4,10 +4,10 @@ export default function Hero() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20 sm:py-28 text-center">
         <div className="inline-flex items-center gap-2 mb-7 px-3 py-1 text-xs font-medium text-blue-700 bg-blue-50 rounded-full border border-blue-100">
           <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block" />
-          Beta – gratis att använda
+          Beta – börja gratis
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight tracking-tight mb-6">
-          Hitta lokala B2B-kunder och skapa<br className="hidden sm:block" /> personliga säljmail på 2 minuter
+          Hitta lokala B2B-kunder och skapa<br className="hidden sm:block" />personliga säljmail på 2 minuter
         </h1>
         <p className="text-lg sm:text-xl text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
           Zoltra hjälper småföretag att hitta relevanta företag i sitt område och skapa personliga, professionella outreach-mail – utan manuell research.
@@ -39,7 +39,7 @@ export default function Hero() {
           </svg>
         </a>
         <p className="mt-7 text-xs text-slate-400">
-          Inga mail skickas automatiskt. Du granskar alltid texten själv.
+          Inget skickas utan att du godkänt det. Du granskar alltid varje mail innan det går iväg – och du kan när som helst stoppa en pågående uppföljning.
         </p>
       </div>
     </section>

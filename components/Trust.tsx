@@ -1,6 +1,6 @@
 const POINTS = [
   'Du granskar alltid mailen innan användning',
-  'Inga mail skickas automatiskt',
+  'Inget skickas utan att du godkänt det',
   'Du kan justera ton, längd och innehåll',
   'Verktyget är till för personlig och relevant kontakt – inte massutskick',
   'Företagsinformation används endast för att skapa bättre leadförslag och mailtexter',

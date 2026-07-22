@@ -14,7 +14,7 @@ export default function Footer() {
           </nav>
         </div>
         <div className="border-t border-slate-800 mt-8 pt-6 text-center text-xs">
-          <p>Zoltra skickar inga mail automatiskt. Du granskar och använder alltid texterna själv.</p>
+          <p>Inget skickas utan att du godkänt det. Du granskar alltid varje mail innan det går iväg – och du kan när som helst stoppa en pågående uppföljning.</p>
           <p className="mt-2">
             Zoltra Handelsbolag skapades 2026 i Falköping, Sverige och drivs av Nils Sterner och Viggo Thorell.
             Zoltra skapades för att vi vill hjälpa mindre företag bli mer konkurrenskraftiga.

@@ -2,7 +2,7 @@ const MESSAGES = [
   'Hitta lokala B2B-leads snabbare',
   'Skapa personliga mailförslag på minuter',
   'Byggt för ansvarsfull B2B-outreach',
-  'Gratis att testa under beta',
+  'Testa gratis, uppgradera när du vill',
   'Fokusera på relevanta företag nära dig',
 ]
 
