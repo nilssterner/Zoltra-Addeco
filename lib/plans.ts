@@ -49,7 +49,6 @@ export const PLANS: Record<PlanId, Plan> = {
     canAutoFollowUp: false,
     canViewPipeline: false,
     canViewStats: false,
-    badge: 'Populärast',
     features: [
       '25 leadsökningar / mån',
       '50 mailförslag att kopiera / mån',
@@ -68,6 +67,7 @@ export const PLANS: Record<PlanId, Plan> = {
     canAutoFollowUp: false,
     canViewPipeline: false,
     canViewStats: false,
+    badge: 'Populärast',
     features: [
       '100 leadsökningar / mån',
       '250 utskick / mån',
